@@ -29,3 +29,13 @@ export function PostBlog(Title,Body,token){
         }
     })
 }
+
+export function ESPost(query){
+    return Request({
+        method:"post",
+        url:'/api/es',
+        params:{
+            query:query
+        }
+    })
+}

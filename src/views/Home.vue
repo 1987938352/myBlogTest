@@ -32,7 +32,9 @@
      @current-change="handleCurrentChange"
     :total="(blogListAll.count/10)">
   </el-pagination>
-
+<el-input placeholder="请输入内容" v-model="input" class="input-with-select">
+   <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
+    </el-input>
   </el-aside>
   
   <el-container>
@@ -45,7 +47,6 @@
       </el-dropdown>
       <span>列表</span>
     </el-header>
-    
     
     <el-collapse v-model="activeNames" >
   <el-collapse-item v-for="(item,index) in blogListAll.value" :key="index" :title="item.title" :name="index">
@@ -62,12 +63,13 @@
 </template>
 
 <script>
-import {getAllPost} from "../network/post";
+import {getAllPost,ESPost} from "../network/post";
  
 export default {
   name: 'Home',
   data(){
     return{
+      input:"",
       blogListAll:{},
       currentPage:1,
       pageSize:1,
@@ -86,6 +88,24 @@ export default {
     
   },
   methods:{
+    search(){
+      this.pageIndexNow=0;
+      if(this.input==""){
+        getAllPost(this.pageIndexNow - 1 ,9,this.orderBy).then(res=>{
+        this.blogListAll=res;
+        console.log(this.blogListAll);
+      }).catch(err=>{
+          
+      })
+      }else{
+        console.log(this.input);
+        ESPost(this.input).then(
+          res=>{
+            this.blogListAll=res
+          }
+        );
+      }
+    },
     changeOB(str){
       this.orderBy=str;
      getAllPost(this.pageIndexNow - 1 ,9,this.orderBy+" "+this.aOrDe).then(res=>{
@@ -163,5 +183,8 @@ export default {
   
   .el-aside {
     color: #333;
+  }
+    .input-with-select .el-input-group__prepend {
+    background-color: #fff;
   }
 </style>
